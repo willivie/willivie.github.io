@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<link th:href="@{/css/mycss.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	  <form th:action="@{user.do?method=add}" method="post">
+	     <table align="center">
+	        <tr>
+	           <td>员工姓名：</td>
+	           <td>
+	              <input type="text" name="uname"/>
+	           </td>
+	        </tr>
+	        
+	        <tr>
+	           <td>密码：</td>
+	           <td>
+	             <input type="password" name="upsw"/>
+	           </td>
+	        </tr>
+	        
+	        <tr>
+	           <td colspan="2">
+	             <input type="submit" value="确定"/>
+	           </td>
+	        </tr>
+	     </table>
+	  </form>
+</body>
+</html>

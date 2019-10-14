@@ -1,0 +1,19 @@
+@CHARSET "UTF-8";
+
+*{
+	font-size: 12px;
+	text-align: center;
+}
+
+table
+{
+	
+	border-collapse: collapse;
+	width: 80%;
+}
+td
+{
+	
+	border: solid 1px #3549FF;
+	line-height: 25px;
+}

@@ -1,0 +1,66 @@
+2019-09-25 10:49:50:281 | took 7ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_ where userinfo0_.uid=(select max(userinfo1_.uid) from userinfo userinfo1_);
+2019-10-09 11:50:07:039 | took 28ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 11:50:21:510 | took 5ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_0_, userinfo0_.uname as uname2_0_0_, userinfo0_.upsw as upsw3_0_0_ from userinfo userinfo0_ where userinfo0_.uid=13;
+2019-10-09 11:50:21:546 | took 12ms | statement | connection 8
+ delete from userinfo where uid=13;
+
+2019-10-09 11:50:21:569 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:22:17:581 | took 11ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:27:51:667 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:27:52:647 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:27:57:559 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:27:57:775 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:27:58:064 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:00:360 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:32:898 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:33:723 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:33:949 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:34:117 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:34:274 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:59:065 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:28:59:297 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 16:29:07:579 | took 4ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_0_, userinfo0_.uname as uname2_0_0_, userinfo0_.upsw as upsw3_0_0_ from userinfo userinfo0_ where userinfo0_.uid=14;
+
+2019-10-09 16:29:19:721 | took 3ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_ where userinfo0_.uid=(select max(userinfo1_.uid) from userinfo userinfo1_);
+2019-10-09 16:29:21:986 | took 0ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+
+2019-10-09 18:47:54:369 | took 5ms | statement | connection 8
+ select userinfo0_.uid as uid1_0_, userinfo0_.uname as uname2_0_, userinfo0_.upsw as upsw3_0_ from userinfo userinfo0_;
+

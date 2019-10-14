@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+     <meta charset="utf-8">
+     <meta name="renderer" content="webkit|ie-comp|ie-stand">
+     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+     <title>首页</title>
+     <meta name="keywords" content="关键词,5个左右,单个8汉字以内">
+     <meta name="description" content="网站描述，字数尽量空制在80个汉字，160个字符以内！">
+     <link th:href="@{/css/h-ui/css/H-ui.css}" rel="stylesheet" type="text/css" />
+     <link th:href="@{/css/lib/Hui-iconfont/1.0.9/iconfont.css}" rel="stylesheet" type="text/css" />
+     <link th:href="@{/css/h-ui/css/style.css}" rel="stylesheet" type="text/css" /><!--自己的样式-->
+</head>
+<body>
+     <a th:href="@{user.do?method=all}" class="	btn btn-secondary radius">员工管理</a>
+     <a th:href="@{user.do?method=max}" class="	btn btn-secondary radius">id最大</a>
+     <a th:href="@{user.do?method=send}" class="btn btn-secondary radius">发个邮件</a>
+
+     <script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script> 
+     <script type="text/javascript"> L2Dwidget.init(); </script>
+
+     <script type="text/javascript" th:src="@{h-ui/js/h-ui.js}"></script>
+</body>
+</html>

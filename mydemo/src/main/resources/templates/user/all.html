@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+	<title>首页</title>
+	<meta name="keywords" content="关键词,5个左右,单个8汉字以内">
+	<meta name="description" content="网站描述，字数尽量空制在80个汉字，160个字符以内！">
+	<link rel="Bookmark" href="favicon.ico" />
+	<link rel="Shortcut Icon" href="favicon.ico" />
+	<link th:href="@{/css/h-ui/css/H-ui.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/lib/Hui-iconfont/1.0.9/iconfont.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/h-ui/css/style.css}" rel="stylesheet" type="text/css" /><!--自己的样式-->
+	<!--<link th:href="@{/css/mycss.css}" rel="stylesheet" type="text/css" />-->
+</head>
+<body>
+   <table align="center" class="table table-border table-bordered table-hover">
+       <tr>
+           <td>编号</td>
+           <td>姓名</td>
+           <td>密码</td>
+           <td>修改</td>
+           <td>删除</td>
+       </tr>
+       <tr th:each="xx:${myall}">
+           <td th:text="${xx.uid}"></td>
+           <td th:text="${xx.uname}">姓名</td>
+           <td th:text="${xx.upsw}">密码</td>
+           <td><a class="btn btn-secondary radius" th:href="@{user.do?method=one(uid=${xx.uid})}">修改</a></td>
+           <td><a class="btn btn-danger radius" th:href="@{user.do?method=del(uid=${xx.uid})}">删除</a></td>
+       </tr>
+
+       <tr>
+          <td colspan="5" align="center">
+             <a style="text-align: center" class="btn btn-primary radius" th:href="@{user.do?method=myadd}">增加员工</a>
+          </td>
+       </tr>
+   </table>
+</body>
+<script>
+   console.log(11111111);
+   var test = [[${myall}]];
+   console.log(test)
+</script>
+</html>
