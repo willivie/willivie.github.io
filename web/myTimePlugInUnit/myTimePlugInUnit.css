@@ -1,0 +1,77 @@
+/*第一个时间插件样式*/
+@import url('https://fonts.googleapis.com/css?family=Dosis');
+@import url('https://fonts.googleapis.com/css?family=Josefin+Slab');
+#upupooTimeStyleclock {
+  position: absolute;
+  color: white;
+  bottom: 85px;
+  right: 105px;
+  font-size: 88px;
+  font-weight: 0;
+  font-family: 'Dosis', sans-serif;
+  font-family: 'Josefin Slab', serif;
+  color: white;
+}
+#upupooTimeStyledate {
+  position: absolute;
+  color: white;
+  bottom: 45px;
+  right: 65px;
+  font-size: 48px;
+  font-family: 'Dosis', sans-serif;
+  font-family: 'Josefin Slab', serif;
+  color: white;
+}
+#upupooTimeStyleseconds {
+  position: absolute;
+  bottom: 100px;
+  right: 65px;
+  font-size: 32px;
+  font-family: 'Dosis', sans-serif;
+  font-family: 'Josefin Slab', serif;
+  color: white;
+}
+
+
+/*第二个时间插件样式*/
+.upupooTimeStyleinner {
+	display:table-cell;
+	vertical-align: middle;
+	font-family: "Muli-Light";
+}
+.upupooTimeStyletime, .upupooTimeStyledate, .upupooTimeStyleseconds {
+	font-family: "Micro";
+	color:#FFF;
+}
+.upupooTimeStyletimeblock {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+	border: solid 1px rgba(255,255,255,0.5);
+	line-height: 100px;
+	border-radius: 300px;
+	width: 300px;
+	height: 300px;
+	box-shadow: inset 0 0 30px rgba(255,255,255,0.5);
+
+}
+
+/*第三个时间插件样式*/
+#upupooTimeStyleclock3 {
+	position:absolute;
+	top:0;
+	left:0;
+	text-align:center;
+	color:#fff;
+	font-family:"等线 Light","Microsoft Yahei Light";
+	font-size:63px;
+	text-shadow: 0 0 20px yellow;
+	z-index:10;
+}
+#upupooTimeStyleclock3 .sec {
+	font-size:0.5em;
+}
