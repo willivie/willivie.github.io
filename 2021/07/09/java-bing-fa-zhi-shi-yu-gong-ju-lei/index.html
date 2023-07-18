@@ -1,0 +1,1355 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Java并发知识与工具类, Willivie&#39;s Blog">
+    <meta name="description" content="no code,no text!">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>Java并发知识与工具类 | Willivie&#39;s Blog</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Willivie&#39;s Blog</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Willivie&#39;s Blog</div>
+        <div class="logo-desc">
+            
+            no code,no text!
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/19.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Java并发知识与工具类</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Java/">
+                                <span class="chip bg-color">Java</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Java/" class="post-category">
+                                Java
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2021-07-09
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.2k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h3 id="一、CAS"><a href="#一、CAS" class="headerlink" title="一、CAS"></a>一、CAS</h3><h4 id="1、乐观锁与悲观锁"><a href="#1、乐观锁与悲观锁" class="headerlink" title="1、乐观锁与悲观锁"></a>1、乐观锁与悲观锁</h4><blockquote>
+<p>锁可以从不同的角度分类。其中，乐观锁和悲观锁是⼀种分类方式</p>
+</blockquote>
+<ul>
+<li><strong>悲观锁：</strong>悲观锁就是我们常说的锁。对于悲观锁来说，它总是认为每次访问共享资源时会发⽣冲突，所以必须对每次数据操作加上锁，以保证临界区的程序<strong>同⼀时间只能有⼀个线程在执行</strong>。 </li>
+<li><strong>乐观锁：</strong>乐观锁⼜称为“⽆锁”，顾名思义，它是乐观派。乐观锁总是假设对共享资源的访问没有冲突，线程可以不停地执行，⽆需加锁也⽆需等待。而⼀旦多个线程发⽣冲突，<strong>乐观锁通常是使用⼀种称为CAS的技术来保证线程执行的安全性。</strong> </li>
+</ul>
+<p><strong>乐观锁多用于【读多写少】的环境，避免频繁加锁影响性能；而悲观锁多用于【写多读少】的环境，避免频繁失败和重试影响性能。</strong> </p>
+<h4 id="2、CAS的概念"><a href="#2、CAS的概念" class="headerlink" title="2、CAS的概念"></a>2、CAS的概念</h4><blockquote>
+<p>CAS的全称是：⽐较并交换（Compare And Swap）。在CAS中，有这样三个值： V：要更新的变量(var)  E：预期值(expected)  N：新值(new)</p>
+</blockquote>
+<p><code>并发编程三大特性：可见性、有序性、原子性；</code></p>
+<p><code>CAS是⼀种原⼦操作，它是⼀种系统原语，是⼀条CPU的原⼦指令，从CPU层⾯保证它的原⼦性</code></p>
+<p><strong>比较并交换的过程如下：</strong></p>
+<pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">判断V是否等于E，如果等于，将V的值设置为N；
+如果不等，说明已经有其它线程更新了V，则当前线程放弃更新，什么都不做。 
+所以这⾥的预期值E本质上指的是“旧值”。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>例子：</strong></p>
+<pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">1. 如果有⼀个多个线程共享的变量 i 原本等于5，我现在在线程A中，想把它设置为新的值6;
+2. 我们使用CAS来做这个事情； 
+3. ⾸先我们用i去与5对⽐，发现它等于5，说明没有被其它线程改过，那我就把它设置为新的值6，此次CAS成功， i 的值被设置成了6；
+4. 如果不等于5，说明 i 被其它线程改过了（⽐如现在 i 的值为2），那么我就什么也不做，此次CAS失败， i 的值仍然为2。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>总结：</strong></p>
+<p><strong>当多个线程同时使用CAS操作⼀个变量时，只有一个会胜出，并成功更新，其余均会失败，但失败的线程并不会被挂起，仅是被告知失败，并且允许再次尝试，当然也允许失败的线程放弃操作。</strong></p>
+<h4 id="3、CAS原理：Unsafe类"><a href="#3、CAS原理：Unsafe类" class="headerlink" title="3、CAS原理：Unsafe类"></a>3、CAS原理：<strong>Unsafe</strong>类</h4><p>前⾯提到，CAS是⼀种原⼦操作。那么Java是怎样来使用CAS的呢？JDK提供了⼀些用于原⼦操作的类，在<a target="_blank" rel="noopener" href="https://www.matools.com/file/manual/jdk_api_1.8_google/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a>包下。</p>
+<p><img src="https://static01.imgkr.com/temp/2338833aa1094ef18d74bb68ca8f9c25.png"></p>
+<p>这⾥我们以<code> AtomicInteger</code> 类的 <code>getAndAdd(int delta) </code>方法为例，来看看Java是如何实现原⼦操作的。 </p>
+<p>先看看这个方法的源码：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token class-name">Unsafe</span> unsafe <span class="token operator">=</span> <span class="token class-name">Unsafe</span><span class="token punctuation">.</span><span class="token function">getUnsafe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token comment">// 方法作用：以原子方式将当前值递增 1。</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> unsafe<span class="token punctuation">.</span><span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> valueOffset<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>实际上这里实际上是调用的<code>Unsafe</code>这个类的方法，它在<code> sun.misc</code>包中。它里面是一些<code>native</code>方法， 其中就有几个关于CAS的：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">boolean</span> <span class="token function">compareAndSwapObject</span><span class="token punctuation">(</span><span class="token class-name">Object</span> o<span class="token punctuation">,</span> <span class="token keyword">long</span> offset<span class="token punctuation">,</span><span class="token class-name">Object</span> expected<span class="token punctuation">,</span> <span class="token class-name">Object</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">boolean</span> <span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span><span class="token class-name">Object</span> o<span class="token punctuation">,</span> <span class="token keyword">long</span> offset<span class="token punctuation">,</span><span class="token keyword">int</span> expected<span class="token punctuation">,</span><span class="token keyword">int</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">boolean</span> <span class="token function">compareAndSwapLong</span><span class="token punctuation">(</span><span class="token class-name">Object</span> o<span class="token punctuation">,</span> <span class="token keyword">long</span> offset<span class="token punctuation">,</span><span class="token keyword">long</span> expected<span class="token punctuation">,</span><span class="token keyword">long</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>Unsafe类是CAS的核心类，由于Java方法无法直接访问底层系统，需用通过本地（native）方法来访问。Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据，可以直接调用操作系统底层资源来执行任务。</strong></p>
+<p>在Java中，如果⼀个方法是<code>native</code>的，那Java就不负责具体实现它，而是交给底层的<code>JVM</code>使用<code>C</code>或者<code>C++</code>去实现</p>
+<pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">Unsafe中对CAS的实现是C++写的，它的具体实现和操作系统、CPU都有关系。
+
+Linux的X86下主要是通过 cmpxchgl 这个指令在CPU级完成CAS操作的，但在多处理器情况下必须使用 lock 指令加锁来完成。当然不同的操作系统和处理器的实现会有所不同，⼤家可以⾃行了解。 
+
+当然，Unsafe类⾥⾯还有其它方法用于不同的用途。⽐如⽀持线程挂起和恢复的 park 和 unpark ， LockSupport类底层就是调用了这两个方法。还有⽀持反射操作的 allocateInstance() 方法。 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>接下来继续看上面<code>getAndIncrement</code>方法：这里实际调用的是<code>Unsafe</code>这个类的<code>getAndAddInt</code>方法</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// AtomicInteger</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> unsafe<span class="token punctuation">.</span><span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> valueOffset<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-</span>
+<span class="token comment">// Unsafe</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token class-name">Object</span> var1<span class="token punctuation">,</span> <span class="token keyword">long</span> var2<span class="token punctuation">,</span> <span class="token keyword">int</span> var4<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">int</span> var5<span class="token punctuation">;</span>
+    <span class="token keyword">do</span> <span class="token punctuation">&#123;</span>
+        var5 <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getIntVolatile</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">,</span> var5<span class="token punctuation">,</span> var5 <span class="token operator">+</span> var4<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> var5<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><code>CAS是“⽆锁”的基础，它允许更新失败。所以经常会与while循环搭配，在失败后不断去重试。 </code></p>
+<pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">代码解析：
+对象 var1 是 this ，也就是⼀个 AtomicInteger 对象。
+然后 var2 是⼀个常量 VALUE 。这个常量是在 AtomicInteger 类中声明的：
+private static final long valueOffset;  这个valueOffset称之为：内存偏移量。
+this.getIntVolatile(var1, var2); 这一行就代表得到了⼀个对象字段偏移量。
+接下来声明了⼀个var5，用来获取原来的值，它返回的应该是原来的值，而新的值的var5 + var4 。
+这里使用的是do-while循环。这种循环不多见，它的⽬的是保证循环体内的语句至少会被执行一遍。这样才能保证return 的值 v 是我们期望的值。 
+再回到循环条件上来，可以看到它是在不断尝试去用CAS更新。如果更新失败，就继续重试。那为什么要把获取“旧值”var5的操作放到循环体内呢？其实这也很好理解。 前⾯说了，CAS如果旧值V不等于预期值E，它就会更新失败。说明旧的值发⽣了变化。那我们当然需要返回的是被其他线程改变之后的旧值了，因此放在了do循环体内。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="4、CAS实现原子操作的三大问题"><a href="#4、CAS实现原子操作的三大问题" class="headerlink" title="4、CAS实现原子操作的三大问题"></a>4、CAS实现原子操作的三大问题</h4><h5 id="4-1、ABA问题："><a href="#4-1、ABA问题：" class="headerlink" title="4.1、ABA问题："></a>4.1、<strong>ABA</strong>问题：</h5><p><code>所谓ABA问题，就是⼀个值原来是A，变成了B，⼜变回了A。这个时候使用CAS是检查不出变化的，但实际上却被更新了两次。ABA问题的解决思路是在变量前⾯追加上版本号或者时间戳。</code></p>
+<p>从<code>JDK 1.5</code>开始，<code>JDK</code>的<code>atomic</code>包⾥提供了⼀个类<code>AtomicStampedReference</code>类来解决ABA问题。 </p>
+<p>这个类的<code>compareAndSet</code>方法的作用是⾸先检查当前引用是否等于预期引用，并且检查当前标志是否等于预期标志，如果⼆者都相等，才使用CAS设置为新的值和标志。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">/**
+  * @param expectedReference 参考的预期值
+  * @param newReference      引用的新值
+  * @param expectedStamp     标记的期望值
+  * @param newStamp          标记的新值
+  * @return  如果成功则为true
+  */</span>
+<span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">compareAndSet</span><span class="token punctuation">(</span><span class="token class-name">V</span>   expectedReference<span class="token punctuation">,</span>
+                             <span class="token class-name">V</span>   newReference<span class="token punctuation">,</span>
+                             <span class="token keyword">int</span> expectedStamp<span class="token punctuation">,</span>
+                             <span class="token keyword">int</span> newStamp<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token class-name">Pair</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">V</span><span class="token punctuation">></span></span> current <span class="token operator">=</span> pair<span class="token punctuation">;</span>
+    <span class="token keyword">return</span>
+        expectedReference <span class="token operator">==</span> current<span class="token punctuation">.</span>reference <span class="token operator">&amp;&amp;</span>
+        expectedStamp <span class="token operator">==</span> current<span class="token punctuation">.</span>stamp <span class="token operator">&amp;&amp;</span>
+        <span class="token punctuation">(</span><span class="token punctuation">(</span>newReference <span class="token operator">==</span> current<span class="token punctuation">.</span>reference <span class="token operator">&amp;&amp;</span>
+          newStamp <span class="token operator">==</span> current<span class="token punctuation">.</span>stamp<span class="token punctuation">)</span> <span class="token operator">||</span>
+         <span class="token function">casPair</span><span class="token punctuation">(</span>current<span class="token punctuation">,</span> <span class="token class-name">Pair</span><span class="token punctuation">.</span><span class="token function">of</span><span class="token punctuation">(</span>newReference<span class="token punctuation">,</span> newStamp<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="4-2、循环时间长开销大"><a href="#4-2、循环时间长开销大" class="headerlink" title="4.2、循环时间长开销大"></a>4.2、循环时间长开销大</h5><p><code>CAS多与自旋结合。如果自旋CAS⻓时间不成功，会占用大量的CPU资源。 </code></p>
+<p>解决思路是让JVM⽀持处理器提供的<strong>pause</strong>指令。</p>
+<p><strong>pause</strong>指令能让⾃旋失败时cpu睡眠⼀小段时间再继续自旋，从而使得读操作的频率低很多,为解决内存顺序冲突而导致的CPU流⽔线重排的代价也会小很多。</p>
+<h5 id="4-3、只能保证⼀个共享变量的原子操作"><a href="#4-3、只能保证⼀个共享变量的原子操作" class="headerlink" title="4.3、只能保证⼀个共享变量的原子操作"></a>4.3、只能保证⼀个共享变量的原子操作</h5><p>有两种解决方案： </p>
+<ul>
+<li><p>使用JDK 1.5开始就提供的 AtomicReference 类保证对象之间的原子性，把多个变量放到⼀个对象里面进行CAS操作； </p>
+</li>
+<li><p>使用锁。锁内的临界区代码可以保证只有当前线程能操作。 </p>
+</li>
+</ul>
+<h3 id="二、AQS"><a href="#二、AQS" class="headerlink" title="二、AQS"></a>二、AQS</h3><h4 id="1、AQS简介"><a href="#1、AQS简介" class="headerlink" title="1、AQS简介"></a>1、AQS简介</h4><p><strong>AQS</strong>是<code>AbstractQueuedSynchronizer</code>的简称，即 <strong>抽象队列同步器</strong>。这个类在 <code>java.util.concurrent.locks</code> 包下面。从字⾯意思上理解: </p>
+<ul>
+<li><p><strong>抽象</strong>：抽象类，只实现⼀些主要逻辑，有些方法由⼦类实现； </p>
+</li>
+<li><p><strong>队列</strong>：使用先进先出（FIFO）队列存储数据； </p>
+</li>
+<li><p><strong>同步</strong>：实现了同步的功能。 </p>
+</li>
+</ul>
+<p>AQS有什么用呢？AQS是⼀个用来构建锁和同步器的框架，使用AQS能简单且⾼效地构造出应用⼴泛的同步器，比如<code>ReentrantLock，Semaphore，ReentrantReadWriteLock，SynchronousQueue，FutureTask</code>等等皆是基于AQS的。</p>
+<h4 id="2、AQS原理分析"><a href="#2、AQS原理分析" class="headerlink" title="2、AQS原理分析"></a>2、AQS原理分析</h4><blockquote>
+<p>AQS 核心思想是：如果被请求的共享资源空闲，则将当前请求资源的线程设置为有效的工作线程，并且将共享资源设置为锁定状态；如果被请求的共享资源被占用，那么就需要一套线程阻塞等待以及被唤醒时锁分配的机制，这个机制 AQS 是用 CLH 队列锁实现的，即将暂时获取不到锁的线程加入到该队列中。</p>
+</blockquote>
+<p><code>CLH(Craig,Landin,and Hagersten) 队列是一个虚拟的双向队列（虚拟的双向队列即不存在队列实例，仅存在结点之间的关联关系），AQS 是将每条请求共享资源的线程封装成一个 CLH 锁队列的一个结点（Node）来实现锁的分配。</code>待续。。。</p>
+<p><img src="https://static01.imgkr.com/temp/e7c14a3538c4404e983e6d56a1a4701d.png"></p>
+<h3 id="三、阻塞队列"><a href="#三、阻塞队列" class="headerlink" title="三、阻塞队列"></a>三、阻塞队列</h3><h4 id="1、阻塞队列的概念"><a href="#1、阻塞队列的概念" class="headerlink" title="1、阻塞队列的概念"></a>1、阻塞队列的概念</h4><p><strong>生产者-消费者模型：</strong></p>
+<p><code>我们假设⼀种场景，⽣产者⼀直⽣产资源，消费者⼀直消费资源，资源存储在⼀个缓冲池中，⽣产者将⽣产的资源存进缓冲池中，消费者从缓冲池中拿到资源进行消费，这就是⼤名鼎鼎的⽣产者-消费者模式。 </code></p>
+<p>在线程世界里，生产者就是生产数据的线程，消费者就是消费数据的线程。</p>
+<p>在多线程开发当中，如果生产者处理速度很快，而消费者处理速度很慢，那么生产者就必须等待消费者处理完，才能继续生产数据。同样的道理，如果消费者的处理能力大于生产者，那么消费者就必须等待生产者。</p>
+<p><img src="https://static01.imgkr.com/temp/568ce17401fc4f46a00cadd3c4e2be9c.png"></p>
+<p>因为需要多个线程操作共享变量，所以很容易引发线程安全问题，造成重复消费和死锁。因此JDK提供了<strong>阻塞队列（BlockingQueue）</strong></p>
+<blockquote>
+<p>BlockingQueue提供了线程安全的队列访问方式，并发包下很多⾼级同步类的实现都是基于BlockingQueue实现的。</p>
+</blockquote>
+<p>阻塞队列一般用于生产者-消费者模式，生产者是往队列里添加元素的线程，消费者是从队列里拿出元素的线程。阻塞队列就用于存放元素的容器。</p>
+<h4 id="2、BlockingQueue的操作方法"><a href="#2、BlockingQueue的操作方法" class="headerlink" title="2、BlockingQueue的操作方法"></a>2、BlockingQueue的操作方法</h4><table>
+<thead>
+<tr>
+<th align="center">方法\处理方法</th>
+<th align="center">抛出异常</th>
+<th align="center">返回特殊值</th>
+<th align="center">一直阻塞</th>
+<th align="center">超时退出</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">插入方法</td>
+<td align="center">add（e）</td>
+<td align="center">offer（e）</td>
+<td align="center">put（e）</td>
+<td align="center">offer（e，time，unit）</td>
+</tr>
+<tr>
+<td align="center">移除方法</td>
+<td align="center">remove（）</td>
+<td align="center">poll（）</td>
+<td align="center">take（）</td>
+<td align="center">poll（time，unit）</td>
+</tr>
+<tr>
+<td align="center">检查方法</td>
+<td align="center">element（）</td>
+<td align="center">peek（）</td>
+<td align="center">不可用</td>
+<td align="center">不可用</td>
+</tr>
+</tbody></table>
+<ul>
+<li>抛出异常：如果试图的操作无法立即执行，就会抛异常。如：当队列满了的时候，再往队列里插入元素就会抛出<code>IllegalStateException(&quot;Queue full&quot;)</code>异常；当队列为空时，从队列里取出元素会抛出<code>NoSuchElementException</code>异常。</li>
+<li>返回特殊值：如果试图的操作无法立即执行，返回一个特殊值，通常是<code>true/false</code></li>
+<li>一直阻塞：如果试图的操作无法立即执行，则一直阻塞或者相应中断</li>
+<li>超时退出：在一直阻塞的基础上增加了超时时间。返回一个特定值告知是否操作成功，通常是<code>true/false</code></li>
+</ul>
+<h4 id="3、BlockingQueue的实现类"><a href="#3、BlockingQueue的实现类" class="headerlink" title="3、BlockingQueue的实现类"></a>3、<strong>BlockingQueue</strong>的实现类</h4><blockquote>
+<p>BlockingQueue是 java.util.concurrent 包下重要的数据结构，区别于普通的队列最主要的特点为阻塞</p>
+</blockquote>
+<p>阻塞功能使得生产者和消费者两端的能力得以平衡，当有任何一端速度过快时，阻塞队列便会把过快的速度给降下来。</p>
+<p><img src="https://static01.imgkr.com/temp/be35691d5f5345a2ab91d2c805f9318a.png"></p>
+<h5 id="2-1、-ArrayBlockingQueue"><a href="#2-1、-ArrayBlockingQueue" class="headerlink" title="2.1、 ArrayBlockingQueue"></a>2.1、 ArrayBlockingQueue</h5><p>由数组结构组成的有界阻塞队列。内部结构是数组，具有数组的特性。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// 默认为非公平</span>
+<span class="token keyword">public</span> <span class="token class-name">ArrayBlockingQueue</span><span class="token punctuation">(</span><span class="token keyword">int</span> capacity<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">(</span>capacity<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 第一个参数是容量，第二个参数是是否公平</span>
+<span class="token keyword">public</span> <span class="token class-name">ArrayBlockingQueue</span><span class="token punctuation">(</span><span class="token keyword">int</span> capacity<span class="token punctuation">,</span> <span class="token keyword">boolean</span> fair<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>capacity <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+        <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>items <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Object</span><span class="token punctuation">[</span>capacity<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantLock</span><span class="token punctuation">(</span>fair<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    notEmpty <span class="token operator">=</span> lock<span class="token punctuation">.</span><span class="token function">newCondition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    notFull <span class="token operator">=</span>  lock<span class="token punctuation">.</span><span class="token function">newCondition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>和 ReentrantLock 一样，如果 ArrayBlockingQueue 被设置为非公平的，那么就存在插队的可能；</p>
+<p>如果设置为公平的，那么等待了最长时间的线程会被优先处理，其他线程不允许插队。</p>
+<p>不过这样的公平策略同时会带来一定的性能损耗，因为非公平的吞吐量通常会高于公平的情况。</p>
+<h5 id="2-2、LinkedBlockingQueue"><a href="#2-2、LinkedBlockingQueue" class="headerlink" title="2.2、LinkedBlockingQueue"></a>2.2、LinkedBlockingQueue</h5><p>有链表结构组成的有界阻塞队列，内部结构是链表，具有链表的特性。默认的大小是<code>Integer.MAX_VALUE</code>，也可以指定大小。此队列按照**先进先出(FIFO)**的原则对元素进行排序。</p>
+<p>使用<code>ReentrantLock</code> 实现线程安全，使用<code>Condition</code>来阻塞和唤醒线程</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token class-name">LinkedBlockingQueue</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">(</span><span class="token class-name">Integer</span><span class="token punctuation">.</span>MAX_VALUE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">public</span> <span class="token class-name">LinkedBlockingQueue</span><span class="token punctuation">(</span><span class="token keyword">int</span> capacity<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>capacity <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>capacity <span class="token operator">=</span> capacity<span class="token punctuation">;</span>
+    last <span class="token operator">=</span> head <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Node</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">E</span><span class="token punctuation">></span></span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="2-3、DelayQueue"><a href="#2-3、DelayQueue" class="headerlink" title="2.3、DelayQueue"></a>2.3、DelayQueue</h5><p>Delayed元素（必须实现Delayed接口）的无界阻塞队列，具有延迟的功能。该队列中的元素只有当其指定的延迟时间到了，才能够从队列中获取到该元素 。</p>
+<p>Delayed 接口继承了 Comparable 接口，所以自然就拥有了比较和排序的能力</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Delayed</span> <span class="token keyword">extends</span> <span class="token class-name">Comparable</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Delayed</span><span class="token punctuation">></span></span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">long</span> <span class="token function">getDelay</span><span class="token punctuation">(</span><span class="token class-name">TimeUnit</span> unit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h5 id="2-4、PriorityBlockingQueue"><a href="#2-4、PriorityBlockingQueue" class="headerlink" title="2.4、PriorityBlockingQueue"></a>2.4、PriorityBlockingQueue</h5><p>基于优先级的无界阻塞队列，可以通过自定义类实现 compareTo 方法来指定元素排序规则，或者初始化时通过构造器参数 Comparator 来指定排序规则。</p>
+<h5 id="2-5、SynchronousQueue"><a href="#2-5、SynchronousQueue" class="headerlink" title="2.5、SynchronousQueue"></a>2.5、SynchronousQueue</h5><p>一个阻塞队列，其中每个插入操作都必须等待另一个线程执行相应的移除操作，反之亦然。 </p>
+<p>同步队列的容量为0，不需要去持有元素，要做的就是直接传递。</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token comment">// peek 方法的含义是取出头结点，但是 SynchronousQueue 的容量是 0，所以连头结点都没有，peek 方法也就没有意义，所以始终返回 null。</span>
+<span class="token keyword">public</span> <span class="token class-name">E</span> <span class="token function">peek</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token comment">// SynchronousQueue 的 size 方法始终返回 0，因为它内部并没有容量</span>
+<span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h3 id="四、锁接口和类"><a href="#四、锁接口和类" class="headerlink" title="四、锁接口和类"></a>四、锁接口和类</h3><p><code>synchronized</code>为Java原生的锁，基于对象来实现加锁。实际上<code>java.concurrent.locks</code>包下，还提供了几个关于锁的类和接口，提供更强大的功能。</p>
+<h4 id="1、synchronized-的缺陷"><a href="#1、synchronized-的缺陷" class="headerlink" title="1、synchronized 的缺陷"></a>1、synchronized 的缺陷</h4><ul>
+<li><strong>无法控制阻塞时长</strong>：如果临界区因为<code>IO</code>或者<code>sleep</code>方法等原因阻塞了，而当前线程又没有释放锁，就会导致所有线程等待</li>
+<li><strong>无法判断是否成功获取到锁</strong></li>
+<li><strong>不能中断一个正在试图获取锁的线程</strong></li>
+</ul>
+<h4 id="2、锁的分类"><a href="#2、锁的分类" class="headerlink" title="2、锁的分类"></a>2、锁的分类</h4><h5 id="2-1、可重入锁与非可重入锁"><a href="#2-1、可重入锁与非可重入锁" class="headerlink" title="2.1、可重入锁与非可重入锁"></a>2.1、<strong>可重入锁与非可重入锁</strong></h5><p><strong>可重入锁即线程对资源重复加锁。</strong><code>synchronized</code>和<code>ReentrantLock</code>都是可重入锁。</p>
+<p>如：在⼀个<code>synchronized</code>实例方法里面调用另⼀个本实例的<code>synchronized</code>实例方法，它可以重新进入这个锁，不会出现任何异常。 </p>
+<h5 id="2-2、公平锁与非公平锁"><a href="#2-2、公平锁与非公平锁" class="headerlink" title="2.2、公平锁与非公平锁"></a>2.2、<strong>公平锁与非公平锁</strong></h5><p><strong>公平锁是指多个线程按照申请锁的顺序来获取锁。</strong>非公平锁则相反，有可能后申请的线程比先申请的线程优先获得锁，会造成优先级反转或者线程饥饿现象。</p>
+<h5 id="2-3、互斥锁与读写锁"><a href="#2-3、互斥锁与读写锁" class="headerlink" title="2.3、互斥锁与读写锁"></a>2.3、<strong>互斥锁与读写锁</strong></h5><p><strong>互斥锁指的是同一时刻只有一个线程能获取到锁</strong>。如：Synchronized、Reentrantlock都属于互斥锁。</p>
+<p><strong>读写锁可以允许多个线程访问</strong>。Java提供的读写锁默认实现为<code>ReentrantReadWriteLock</code>，这个类内部维护了两个锁：一个读锁，一个写锁。通过分离读锁和写锁，使读多写少的场景下，性能得以提升。</p>
+<h4 id="3、JDK中有关锁的一些接口和类"><a href="#3、JDK中有关锁的一些接口和类" class="headerlink" title="3、JDK中有关锁的一些接口和类"></a>3、<strong>JDK</strong>中有关锁的一些接口和类</h4><p><img src="https://static01.imgkr.com/temp/5dd124c0a96e4755a133f69732d9faf3.png"></p>
+<h5 id="3-1、Condition、Lock、ReadWriteLock"><a href="#3-1、Condition、Lock、ReadWriteLock" class="headerlink" title="3.1、Condition、Lock、ReadWriteLock"></a>3.1、Condition、Lock、ReadWriteLock</h5><p><code>juc.locks</code>包下共有三个接口：<code>Condition、Lock、ReadWriteLock</code>。</p>
+<p><strong>Lock接口</strong>下有一些获取锁和释放锁的方法：<code>lock、unlock、tryLock...</code></p>
+<p><strong>ReadWriteLock接口</strong>下只有两个方法：<code>readLock、writeLock</code></p>
+<p><strong>Lock接口</strong>下还有个方法是可以获取一个<strong>Condition</strong> ：<code>Condition newCondition();</code></p>
+<p>前面有说到，每个对象都可以⽤继承⾃ Object 的<strong>wait/notify</strong>⽅法来实现<strong>等待/通知机制</strong>。而 Condition 接口也提供了类似Object 的监视器方法了。这两种的差异：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Object监视器</th>
+<th>Condition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前置条件</td>
+<td>获取对象的锁</td>
+<td>Lock lock = new ReentrantLock()<br>Condition condition = lock.newCondition()</td>
+</tr>
+<tr>
+<td>调用方式</td>
+<td>直接调用，比如object.notify()</td>
+<td>直接调用，比如condition.await()</td>
+</tr>
+<tr>
+<td>等待队列的个数</td>
+<td>一个</td>
+<td>多个</td>
+</tr>
+<tr>
+<td>当前线程释放锁进入等待状态</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>当前线程释放锁进入等待状态，在等待状态中不中断</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>当前线程释放锁并进入超时等待状态</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Willivie</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://willivie.gitee.io/2021/07/09/java-bing-fa-zhi-shi-yu-gong-ju-lei/">https://willivie.gitee.io/2021/07/09/java-bing-fa-zhi-shi-yu-gong-ju-lei/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Willivie</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Java/">
+                                    <span class="chip bg-color">Java</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/08/01/she-ji-mo-shi-dan-li/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="设计模式-单例">
+                        
+                        <span class="card-title">设计模式-单例</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2021-08-01
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Java/" class="post-category">
+                                    Java
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Design-Pattern/">
+                        <span class="chip bg-color">Design Pattern</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2021/07/05/alibaba-cloud-toolkit/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/25.jpg" class="responsive-img" alt="Alibaba Cloud Toolkit 插件">
+                        
+                        <span class="card-title">Alibaba Cloud Toolkit 插件</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-07-05
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Java/" class="post-category">
+                                    Java
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Idea/">
+                        <span class="chip bg-color">Idea</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="5071241552"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.5'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2020-2023</span>
+            
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">70.9k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv" style='display:none'>
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv" style='display:none'>
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2020";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/willivie" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="https://gitee.com/willivie" class="tooltipped" target="_blank" data-tooltip="访问我的Gitee" data-position="top" data-delay="50">
+        <i class="fab fa-google"></i>
+    </a>
+
+
+
+    <a href="mailto:willivie@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2469785911" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2469785911" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script> $(document).ready(function () { var int = setInterval(fixCount, 50); // 50ms周期检测函数 var pvcountOffset = 80000; // 初始化首次数据 var uvcountOffset = 20000; function fixCount() { if (document.getElementById("busuanzi_container_site_pv").style.display != "none") { $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + pvcountOffset); clearInterval(int); } if ($("#busuanzi_container_site_pv").css("display") != "none") { $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + uvcountOffset); // 加上初始数据 clearInterval(int); // 停止检测 } } }); </script>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

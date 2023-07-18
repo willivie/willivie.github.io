@@ -1,0 +1,1823 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="Seata处理分布式事务, Willivie&#39;s Blog">
+    <meta name="description" content="no code,no text!">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>Seata处理分布式事务 | Willivie&#39;s Blog</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Willivie&#39;s Blog</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Willivie&#39;s Blog</div>
+        <div class="logo-desc">
+            
+            no code,no text!
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/4.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">Seata处理分布式事务</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        padding: 35px 0 15px 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        padding-bottom: 30px;
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+
+        position: absolute;
+        right: 23.5vw;
+        display: block;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Seata/">
+                                <span class="chip bg-color">Seata</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/SpringCloud-Alibaba/" class="post-category">
+                                SpringCloud Alibaba
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2022-06-02
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.4k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    19 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+
+        
+        <!-- 是否加载使用自带的 prismjs. -->
+        <link rel="stylesheet" href="/libs/prism/prism.css">
+        
+
+        
+
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h3 id="一、分布式事务详解"><a href="#一、分布式事务详解" class="headerlink" title="一、分布式事务详解"></a>一、分布式事务详解</h3><h4 id="1、分布式架构演进之-数据库的水平拆分"><a href="#1、分布式架构演进之-数据库的水平拆分" class="headerlink" title="1、分布式架构演进之 - 数据库的水平拆分"></a>1、分布式架构演进之 - 数据库的水平拆分</h4><p><code>一个单体应用的业务数据库起初是单库单表，但随着业务数据规模的快速发展，数据量越来越大，单库单表逐渐成为瓶颈。所以我们对数据库进行了水平拆分，将原单库单表拆分成数据库分片。 </code></p>
+<p>如下图所示，分库分表之后，原来在一个数据库上就能完成的写操作，可能就会跨多个数据库，这就产生了跨数据库事务问题。</p>
+<p><img src="https://static01.imgkr.com/temp/edb7db3764264b818f6e0f085b439271.png"></p>
+<h4 id="2、-分布式架构演进之-业务服务化拆分"><a href="#2、-分布式架构演进之-业务服务化拆分" class="headerlink" title="2、 分布式架构演进之 - 业务服务化拆分"></a>2、 分布式架构演进之 - 业务服务化拆分</h4><p><code>单体应用被拆分成微服务应用，原来的三个模块被拆分成三个独立的应用，分别使用三个独立的数据库，业务操作需要调用三个服务来完成。此时每个服务内部的数据一致性由本地事务来保证，但是全局的数据一致性问题没法保证。</code></p>
+<p> <img src="https://static01.imgkr.com/temp/072bcec432b24d0f8fab595a5865b064.png"></p>
+<p><code>业务系统按照服务拆分之后，一个完整的业务往往需要调用多个服务，如何保证多个服务间的数据一致性成为一个难题。 </code></p>
+<h3 id="二、Seata简介"><a href="#二、Seata简介" class="headerlink" title="二、Seata简介"></a>二、Seata简介</h3><blockquote>
+<p> 官网：<a target="_blank" rel="noopener" href="http://seata.io/zh-cn">http://seata.io/zh-cn</a></p>
+</blockquote>
+<h4 id="概述："><a href="#概述：" class="headerlink" title="概述："></a>概述：</h4><p><code>Seata 是一款阿里巴巴开源的分布式事务解决方案，致力于在微服务架构下提供高性能和简单易用的分布式事务服务。 </code></p>
+<h4 id="特色功能："><a href="#特色功能：" class="headerlink" title="特色功能："></a>特色功能：</h4><ul>
+<li>微服务架构支持：已支持 Dubbo、Spring Cloud、Sofa-RPC、Motan 和 grpc 等RPC框架，其他框架持续集成中 </li>
+<li>AT模式：提供无侵入自动补偿的事务模式，目前已支持 MySQL、 Oracle 、PostgreSQL和 TiDB的AT模式。</li>
+<li>TCC模式：不依赖于底层数据资源的事务支持，支持把 <strong>自定义</strong> 的分支事务纳入到全局事务的管理中。 支持 TCC 模式并可与 AT 混用，灵活度更高 </li>
+<li>SAGA 模式：为长事务提供有效的解决方案。适用：业务流程长、业务流程多的场景</li>
+</ul>
+<h4 id="Seate是如何实现分布式事务？"><a href="#Seate是如何实现分布式事务？" class="headerlink" title="Seate是如何实现分布式事务？"></a>Seate是如何实现分布式事务？</h4><p><strong>分布式事务</strong>是由一批<strong>分支事务</strong>组成的<strong>全局</strong>事务<strong>，通常</strong>分支事务只是<strong>本地事务</strong>。 </p>
+<p><img src="https://cdn.jsdelivr.net/gh/willivie/pictstorage/blogImg/68747470733a2f2f63646e2e6e6c61726b2e636f6d2f6c61726b2f302f323031382f706e672f31383836322f313534353031353435343937392d61313865313666362d656434312d343466312d396337612d6264383263346435666639392e706e67.png" alt="68747470733a2f2f63646e2e6e6c61726b2e636f6d2f6c61726b2f302f323031382f706e672f31383836322f313534353031353435343937392d61313865313666362d656434312d343466312d396337612d6264383263346435666639392e706e67"></p>
+<p><code>一个分布式事务过程由一个全局唯一的事务ID+三组件模型共同完成</code></p>
+<p><strong>三组件模型：</strong></p>
+<ul>
+<li>TC (Transaction Coordinator) - <strong>事务协调者</strong>：维护全局和分支事务的状态，驱动全局事务提交或回滚。</li>
+<li>TM (Transaction Manager) - <strong>事务管理器</strong>：定义全局事务的范围：开始全局事务、提交或回滚全局事务。</li>
+<li>RM (Resource Manager) - <strong>资源管理器</strong>：管理分支事务处理的资源，与TC交谈以注册分支事务和报告分支事务的状态，并驱动分支事务提交或回滚。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/willivie/pictstorage/blogImg/612d6663333137643333383966342e706e67.png" alt="612d6663333137643333383966342e706e67"></p>
+<p><strong>图解：</strong></p>
+<ol>
+<li>TM 向 TC 申请开启一个<strong>全局事务</strong>，全局事务创建成功并生成一个<strong>全局唯一的 XID</strong>；</li>
+<li>XID 在微服务<strong>调用链路</strong>的上下文中传播；</li>
+<li>RM 向 TC 注册<strong>分支事务</strong>，将其纳入 XID 对应<strong>全局事务</strong>的管辖；</li>
+<li>TM 请求 TC <strong>提交</strong>或<strong>回滚</strong> XID 对应的全局事务。</li>
+<li>TC 调度 XID 下管辖的<strong>全部分支事务</strong>完成<strong>提交</strong>或<strong>回滚</strong>请求。</li>
+</ol>
+<h3 id="三、Seata安装与服务端配置"><a href="#三、Seata安装与服务端配置" class="headerlink" title="三、Seata安装与服务端配置"></a>三、Seata安装与服务端配置</h3><blockquote>
+<p>下载：<a target="_blank" rel="noopener" href="https://github.com/seata/seata/releases">https://github.com/seata/seata/releases</a></p>
+<p>Seata分TC、TM和RM三个角色，TC（Server端）为单独服务端部署，TM和RM（Client端）由业务系统集成。 </p>
+</blockquote>
+<p>下载成功就可以了，绿色版免安装。这里下载的版本为<code>seata 1.4.zip</code>，解压后的目录：</p>
+<p><img src="https://static01.imgkr.com/temp/0a79e31be1c2415197264f539730bcf0.png"></p>
+<h4 id="集成Nacos配置"><a href="#集成Nacos配置" class="headerlink" title="集成Nacos配置"></a>集成Nacos配置</h4><p>接下来配置环境，由于我这边<code>服务注册中心</code>使用的<code>nacos</code>，修改两个配置文件<code>conf/file.conf</code>、<code>conf/regirsty.conf</code></p>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment">## seata/conf/file.conf 文件</span>
+<span class="token comment">## 事务日志存储，仅用于seata服务器</span>
+store <span class="token punctuation">&#123;</span>
+  <span class="token comment">## store mode: file、db、redis</span>
+  <span class="token comment">## Server端存储模式（store.mode）现有file、db、redis三种;</span>
+  <span class="token comment">## db模式为高可用模式，全局事务会话信息通过db共享，相应性能差些;</span>
+  <span class="token comment">##redis模式Seata-Server 1.3及以上版本支持,性能较高,存在事务信息丢失风险,请提前配置合适当前场景的redis持久化配置;</span>
+  mode <span class="token operator">=</span> <span class="token string">"db"</span> <span class="token comment"># 修改为数据库持久化</span>
+
+  <span class="token comment">## 文件存储属性</span>
+  file <span class="token punctuation">&#123;</span>
+    <span class="token comment">## store location dir</span>
+    dir <span class="token operator">=</span> <span class="token string">"sessionStore"</span>
+    <span class="token comment"># branch session size , if exceeded first try compress lockkey, still exceeded throws exceptions</span>
+    maxBranchSessionSize <span class="token operator">=</span> <span class="token number">16384</span>
+    <span class="token comment"># globe session size , if exceeded throws exceptions</span>
+    maxGlobalSessionSize <span class="token operator">=</span> <span class="token number">512</span>
+    <span class="token comment"># file buffer size , if exceeded allocate new buffer</span>
+    fileWriteBufferCacheSize <span class="token operator">=</span> <span class="token number">16384</span>
+    <span class="token comment"># when recover batch read size</span>
+    sessionReloadReadSize <span class="token operator">=</span> <span class="token number">100</span>
+    <span class="token comment"># async, sync</span>
+    flushDiskMode <span class="token operator">=</span> async
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">## 数据库存储属性</span>
+  db <span class="token punctuation">&#123;</span>
+    <span class="token comment">## the implement of javax.sql.DataSource, such as DruidDataSource(druid)/BasicDataSource(dbcp)/HikariDataSource(hikari) etc.</span>
+    datasource <span class="token operator">=</span> <span class="token string">"druid"</span>
+    <span class="token comment">## mysql/oracle/postgresql/h2/oceanbase etc.</span>
+    dbType <span class="token operator">=</span> <span class="token string">"mysql"</span>
+    driverClassName <span class="token operator">=</span> <span class="token string">"com.mysql.jdbc.Driver"</span>
+    url <span class="token operator">=</span> <span class="token string">"jdbc:mysql://127.0.0.1:3306/seata"</span>
+    <span class="token keyword">user</span> <span class="token operator">=</span> <span class="token string">"root"</span>
+    password <span class="token operator">=</span> <span class="token string">"123456"</span>
+    minConn <span class="token operator">=</span> <span class="token number">5</span>
+    maxConn <span class="token operator">=</span> <span class="token number">100</span>
+    globalTable <span class="token operator">=</span> <span class="token string">"global_table"</span>
+    branchTable <span class="token operator">=</span> <span class="token string">"branch_table"</span>
+    lockTable <span class="token operator">=</span> <span class="token string">"lock_table"</span>
+    queryLimit <span class="token operator">=</span> <span class="token number">100</span>
+    maxWait <span class="token operator">=</span> <span class="token number">5000</span>
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token comment">## redis存储属性</span>
+  redis <span class="token punctuation">&#123;</span>
+    host <span class="token operator">=</span> <span class="token string">"127.0.0.1"</span>
+    port <span class="token operator">=</span> <span class="token string">"6379"</span>
+    password <span class="token operator">=</span> <span class="token string">""</span>
+    database <span class="token operator">=</span> <span class="token string">"0"</span>
+    minConn <span class="token operator">=</span> <span class="token number">1</span>
+    maxConn <span class="token operator">=</span> <span class="token number">10</span>
+    maxTotal <span class="token operator">=</span> <span class="token number">100</span>
+    queryLimit <span class="token operator">=</span> <span class="token number">100</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment">## conf/regirsty.conf 文件</span>
+registry <span class="token punctuation">&#123;</span>
+  <span class="token comment"># file 、nacos 、eureka、redis、zk、consul、etcd3、sofa</span>
+  type <span class="token operator">=</span> <span class="token string">"nacos"</span> <span class="token comment"># 修改为你使用的存储方式</span>
+  loadBalance <span class="token operator">=</span> <span class="token string">"RandomLoadBalance"</span>
+  loadBalanceVirtualNodes <span class="token operator">=</span> <span class="token number">10</span>
+
+  nacos <span class="token punctuation">&#123;</span>
+    application <span class="token operator">=</span> <span class="token string">"seata-server"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:8848"</span>
+    group <span class="token operator">=</span> <span class="token string">"SEATA_GROUP"</span>
+    namespace <span class="token operator">=</span> <span class="token string">""</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    username <span class="token operator">=</span> <span class="token string">""</span>
+    password <span class="token operator">=</span> <span class="token string">""</span>
+  <span class="token punctuation">&#125;</span>
+  eureka <span class="token punctuation">&#123;</span>
+    serviceUrl <span class="token operator">=</span> <span class="token string">"http://localhost:8761/eureka"</span>
+    application <span class="token operator">=</span> <span class="token string">"default"</span>
+    weight <span class="token operator">=</span> <span class="token string">"1"</span>
+  <span class="token punctuation">&#125;</span>
+  redis <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"localhost:6379"</span>
+    db <span class="token operator">=</span> <span class="token number">0</span>
+    password <span class="token operator">=</span> <span class="token string">""</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    <span class="token keyword">timeout</span> <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token punctuation">&#125;</span>
+  zk <span class="token punctuation">&#123;</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:2181"</span>
+    sessionTimeout <span class="token operator">=</span> <span class="token number">6000</span>
+    connectTimeout <span class="token operator">=</span> <span class="token number">2000</span>
+    username <span class="token operator">=</span> <span class="token string">""</span>
+    password <span class="token operator">=</span> <span class="token string">""</span>
+  <span class="token punctuation">&#125;</span>
+  consul <span class="token punctuation">&#123;</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:8500"</span>
+  <span class="token punctuation">&#125;</span>
+  etcd3 <span class="token punctuation">&#123;</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"http://localhost:2379"</span>
+  <span class="token punctuation">&#125;</span>
+  sofa <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:9603"</span>
+    application <span class="token operator">=</span> <span class="token string">"default"</span>
+    region <span class="token operator">=</span> <span class="token string">"DEFAULT_ZONE"</span>
+    datacenter <span class="token operator">=</span> <span class="token string">"DefaultDataCenter"</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    group <span class="token operator">=</span> <span class="token string">"SEATA_GROUP"</span>
+    addressWaitTime <span class="token operator">=</span> <span class="token string">"3000"</span>
+  <span class="token punctuation">&#125;</span>
+  file <span class="token punctuation">&#123;</span>
+    name <span class="token operator">=</span> <span class="token string">"file.conf"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+config <span class="token punctuation">&#123;</span>
+  <span class="token comment"># file、nacos 、apollo、zk、consul、etcd3</span>
+  type <span class="token operator">=</span> <span class="token string">"nacos"</span> <span class="token comment"># 和上面一样</span>
+
+  nacos <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:8848"</span>
+    namespace <span class="token operator">=</span> <span class="token string">""</span>
+    group <span class="token operator">=</span> <span class="token string">"SEATA_GROUP"</span>
+    username <span class="token operator">=</span> <span class="token string">""</span>
+    password <span class="token operator">=</span> <span class="token string">""</span>
+  <span class="token punctuation">&#125;</span>
+  consul <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:8500"</span>
+  <span class="token punctuation">&#125;</span>
+  apollo <span class="token punctuation">&#123;</span>
+    appId <span class="token operator">=</span> <span class="token string">"seata-server"</span>
+    apolloMeta <span class="token operator">=</span> <span class="token string">"http://192.168.1.204:8801"</span>
+    namespace <span class="token operator">=</span> <span class="token string">"application"</span>
+    apolloAccesskeySecret <span class="token operator">=</span> <span class="token string">""</span>
+  <span class="token punctuation">&#125;</span>
+  zk <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:2181"</span>
+    sessionTimeout <span class="token operator">=</span> <span class="token number">6000</span>
+    connectTimeout <span class="token operator">=</span> <span class="token number">2000</span>
+    username <span class="token operator">=</span> <span class="token string">""</span>
+    password <span class="token operator">=</span> <span class="token string">""</span>
+  <span class="token punctuation">&#125;</span>
+  etcd3 <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"http://localhost:2379"</span>
+  <span class="token punctuation">&#125;</span>
+  file <span class="token punctuation">&#123;</span>
+    name <span class="token operator">=</span> <span class="token string">"file.conf"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="数据库配置-Seata所需"><a href="#数据库配置-Seata所需" class="headerlink" title="数据库配置-Seata所需"></a>数据库配置-Seata所需</h4><p>版本为<code>Seata 1.4</code>，sql文件的下载目录在<code>/seata/conf/REDEME.md</code>中。</p>
+<blockquote>
+<p> 链接：<a target="_blank" rel="noopener" href="https://github.com/seata/seata/tree/1.4.0/script">https://github.com/seata/seata/tree/1.4.0/script</a></p>
+</blockquote>
+<pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">环境必要配置，不配用不了！！！
+全局事务会话信息由3块内容构成，全局事务--&gt;分支事务--&gt;全局锁，对应表global_table、branch_table、lock_table 
+server端数据库脚本 (包含 lock_table、branch_table 与 global_table) 及各个容器配置在上面链接中&#x2F;script&#x2F;server目录下<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="启动顺序"><a href="#启动顺序" class="headerlink" title="启动顺序"></a>启动顺序</h4><p>先启动<code>Nacos</code>，再启动<code>Seata</code>。两个控制台都没报错即可</p>
+<h3 id="四、Seata-Client-配置"><a href="#四、Seata-Client-配置" class="headerlink" title="四、Seata Client 配置"></a>四、Seata Client 配置</h3><h4 id="业务系统集成说明（AT模式）"><a href="#业务系统集成说明（AT模式）" class="headerlink" title="业务系统集成说明（AT模式）"></a>业务系统集成说明（AT模式）</h4><pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">这里会创建三个服务，一个订单服务，一个库存服务，一个账户服务。
+为了减少文章篇幅，这里只写订单服务，库存和账户除了业务相关，其他的配置相同
+ 
+当用户下单时，会在订单服务中创建一个订单，然后通过远程调用库存服务来扣减下单商品的库存，
+再通过远程调用账户服务来扣减用户账户里面的余额，
+最后在订单服务中修改订单状态为已完成。
+ 
+该操作跨越三个数据库，有两次远程调用，很明显会有分布式事务问题。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<h4 id="数据库配置-Seata所需-1"><a href="#数据库配置-Seata所需-1" class="headerlink" title="数据库配置-Seata所需"></a>数据库配置-Seata所需</h4><blockquote>
+<p>链接：<a target="_blank" rel="noopener" href="https://github.com/seata/seata/tree/1.4.0/script/client/at/db/mysql.sql">https://github.com/seata/seata/tree/1.4.0/script/client/at/db/mysql.sql</a></p>
+</blockquote>
+<pre class="line-numbers language-tex" data-language="tex"><code class="language-tex">环境必要配置！！！
+对于AT模式，必须为业务数据库初始化此sql。seata服务器不需要它。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+
+<h4 id="项目集成"><a href="#项目集成" class="headerlink" title="项目集成"></a>项目集成</h4><ol>
+<li>pom.xml</li>
+</ol>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"> <span class="token comment">&lt;!--nacos--></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.alibaba.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-alibaba-nacos-discovery<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+<span class="token comment">&lt;!--seata--></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>com.alibaba.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-alibaba-seata<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token comment">&lt;!--移除自带的版本--></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>exclusions</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>exclusion</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>seata-all<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>io.seata<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>exclusion</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>exclusions</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>io.seata<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>seata-all<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>version</span><span class="token punctuation">></span></span>1.4.0<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>version</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span>
+<span class="token comment">&lt;!--feign--></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>dependency</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>groupId</span><span class="token punctuation">></span></span>org.springframework.cloud<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>groupId</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>artifactId</span><span class="token punctuation">></span></span>spring-cloud-starter-openfeign<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>artifactId</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>dependency</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="2">
+<li>application.yml</li>
+</ol>
+<pre class="line-numbers language-yaml" data-language="yaml"><code class="language-yaml"><span class="token key atrule">server</span><span class="token punctuation">:</span>
+  <span class="token key atrule">port</span><span class="token punctuation">:</span> <span class="token number">2001</span>
+
+<span class="token key atrule">spring</span><span class="token punctuation">:</span>
+  <span class="token key atrule">application</span><span class="token punctuation">:</span>
+    <span class="token key atrule">name</span><span class="token punctuation">:</span> seata<span class="token punctuation">-</span>order<span class="token punctuation">-</span>service
+  <span class="token key atrule">cloud</span><span class="token punctuation">:</span>
+    <span class="token key atrule">alibaba</span><span class="token punctuation">:</span>
+      <span class="token key atrule">seata</span><span class="token punctuation">:</span>
+        <span class="token comment">#自定义事务组名称需要与seata-server中的对应</span>
+        <span class="token key atrule">tx-service-group</span><span class="token punctuation">:</span> seata<span class="token punctuation">-</span>order<span class="token punctuation">-</span>service<span class="token punctuation">-</span>group
+    <span class="token key atrule">nacos</span><span class="token punctuation">:</span> <span class="token comment">#这里配置要与Seata服务端 `seata/conf/file.conf`文件内的nocas配置保持一致</span>
+      <span class="token key atrule">discovery</span><span class="token punctuation">:</span>
+        <span class="token key atrule">server-addr</span><span class="token punctuation">:</span> localhost<span class="token punctuation">:</span><span class="token number">8848</span>
+        <span class="token key atrule">group</span><span class="token punctuation">:</span> SEATA_GROUP <span class="token comment">#不配会报no available service found in cluster 'xxx'错</span>
+  <span class="token key atrule">datasource</span><span class="token punctuation">:</span>
+    <span class="token key atrule">driver-class-name</span><span class="token punctuation">:</span> com.mysql.jdbc.Driver
+    <span class="token key atrule">url</span><span class="token punctuation">:</span> jdbc<span class="token punctuation">:</span>mysql<span class="token punctuation">:</span>//localhost<span class="token punctuation">:</span>3306/seata_order
+    <span class="token key atrule">username</span><span class="token punctuation">:</span> root
+    <span class="token key atrule">password</span><span class="token punctuation">:</span> <span class="token number">123456</span>
+
+<span class="token key atrule">feign</span><span class="token punctuation">:</span>
+  <span class="token key atrule">hystrix</span><span class="token punctuation">:</span>
+    <span class="token key atrule">enabled</span><span class="token punctuation">:</span> <span class="token boolean important">false</span>
+
+<span class="token key atrule">logging</span><span class="token punctuation">:</span>
+  <span class="token key atrule">level</span><span class="token punctuation">:</span>
+    <span class="token key atrule">io</span><span class="token punctuation">:</span>
+      <span class="token key atrule">seata</span><span class="token punctuation">:</span> info
+
+<span class="token key atrule">mybatis</span><span class="token punctuation">:</span>
+  <span class="token key atrule">mapperLocations</span><span class="token punctuation">:</span> classpath<span class="token punctuation">:</span>mapper/<span class="token important">*.xml</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="3">
+<li>file.conf</li>
+</ol>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment"># 下载链接：https://github.com/seata/seata/tree/1.4.0/script/client/conf/file.conf</span>
+transport <span class="token punctuation">&#123;</span>
+  <span class="token comment"># tcp udt unix-domain-socket</span>
+  type <span class="token operator">=</span> <span class="token string">"TCP"</span>
+  <span class="token comment">#NIO NATIVE</span>
+  <span class="token keyword">server</span> <span class="token operator">=</span> <span class="token string">"NIO"</span>
+  <span class="token comment">#enable heartbeat</span>
+  heartbeat <span class="token operator">=</span> <span class="token boolean">true</span>
+  <span class="token comment"># the client batch send request enable</span>
+  enableClientBatchSendRequest <span class="token operator">=</span> <span class="token boolean">true</span>
+  <span class="token comment">#thread factory for netty</span>
+  threadFactory <span class="token punctuation">&#123;</span>
+    bossThreadPrefix <span class="token operator">=</span> <span class="token string">"NettyBoss"</span>
+    workerThreadPrefix <span class="token operator">=</span> <span class="token string">"NettyServerNIOWorker"</span>
+    serverExecutorThread<span class="token operator">-</span>prefix <span class="token operator">=</span> <span class="token string">"NettyServerBizHandler"</span>
+    shareBossWorker <span class="token operator">=</span> <span class="token boolean">false</span>
+    clientSelectorThreadPrefix <span class="token operator">=</span> <span class="token string">"NettyClientSelector"</span>
+    clientSelectorThreadSize <span class="token operator">=</span> <span class="token number">1</span>
+    clientWorkerThreadPrefix <span class="token operator">=</span> <span class="token string">"NettyClientWorkerThread"</span>
+    <span class="token comment"># netty boss thread size,will not be used for UDT</span>
+    bossThreadSize <span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token comment">#auto default pin or 8</span>
+    workerThreadSize <span class="token operator">=</span> <span class="token string">"default"</span>
+  <span class="token punctuation">&#125;</span>
+  shutdown <span class="token punctuation">&#123;</span>
+    <span class="token comment"># when destroy server, wait seconds</span>
+    wait <span class="token operator">=</span> <span class="token number">3</span>
+  <span class="token punctuation">&#125;</span>
+  serialization <span class="token operator">=</span> <span class="token string">"seata"</span>
+  compressor <span class="token operator">=</span> <span class="token string">"none"</span>
+<span class="token punctuation">&#125;</span>
+service <span class="token punctuation">&#123;</span>
+  <span class="token comment">#transaction service group mapping</span>
+  <span class="token comment">#这里一定要和上面yml里面配置一致，不然会报错！！！</span>
+  vgroupMapping<span class="token punctuation">.</span>seata<span class="token operator">-</span>order<span class="token operator">-</span>service<span class="token operator">-</span>group <span class="token operator">=</span> <span class="token string">"default"</span>
+  <span class="token comment">#only support when registry.type=file, please don't set multiple addresses</span>
+  default<span class="token punctuation">.</span>grouplist <span class="token operator">=</span> <span class="token string">"127.0.0.1:8091"</span>
+  <span class="token comment">#degrade, current not support</span>
+  enableDegrade <span class="token operator">=</span> <span class="token boolean">false</span>
+  <span class="token comment">#disable seata</span>
+  disableGlobalTransaction <span class="token operator">=</span> <span class="token boolean">false</span>
+<span class="token punctuation">&#125;</span>
+
+client <span class="token punctuation">&#123;</span>
+  rm <span class="token punctuation">&#123;</span>
+    asyncCommitBufferLimit <span class="token operator">=</span> <span class="token number">10000</span>
+    lock <span class="token punctuation">&#123;</span>
+      retryInterval <span class="token operator">=</span> <span class="token number">10</span>
+      retryTimes <span class="token operator">=</span> <span class="token number">30</span>
+      retryPolicyBranchRollbackOnConflict <span class="token operator">=</span> <span class="token boolean">true</span>
+    <span class="token punctuation">&#125;</span>
+    reportRetryCount <span class="token operator">=</span> <span class="token number">5</span>
+    tableMetaCheckEnable <span class="token operator">=</span> <span class="token boolean">false</span>
+    reportSuccessEnable <span class="token operator">=</span> <span class="token boolean">false</span>
+  <span class="token punctuation">&#125;</span>
+  tm <span class="token punctuation">&#123;</span>
+    commitRetryCount <span class="token operator">=</span> <span class="token number">5</span>
+    rollbackRetryCount <span class="token operator">=</span> <span class="token number">5</span>
+  <span class="token punctuation">&#125;</span>
+  undo <span class="token punctuation">&#123;</span>
+    dataValidation <span class="token operator">=</span> <span class="token boolean">true</span>
+    logSerialization <span class="token operator">=</span> <span class="token string">"jackson"</span>
+    logTable <span class="token operator">=</span> <span class="token string">"undo_log"</span>
+  <span class="token punctuation">&#125;</span>
+  log <span class="token punctuation">&#123;</span>
+    exceptionRate <span class="token operator">=</span> <span class="token number">100</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="4">
+<li>registry.conf</li>
+</ol>
+<pre class="line-numbers language-nginx" data-language="nginx"><code class="language-nginx"><span class="token comment"># 下载链接：https://github.com/seata/seata/tree/1.4.0/script/client/conf/registry.conf</span>
+registry <span class="token punctuation">&#123;</span>
+  <span class="token comment"># file 、nacos 、eureka、redis、zk、consul、etcd3、sofa</span>
+  type <span class="token operator">=</span> <span class="token string">"nacos"</span>
+
+  nacos <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"localhost:8848"</span>
+    namespace <span class="token operator">=</span> <span class="token string">"public"</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    group <span class="token operator">=</span> <span class="token string">"SEATA_GROUP"</span> <span class="token comment"># 一定要与yaml配置一致！</span>
+    username <span class="token operator">=</span> <span class="token string">"nacos"</span>
+    password <span class="token operator">=</span> <span class="token string">"nacos"</span>
+  <span class="token punctuation">&#125;</span>
+  eureka <span class="token punctuation">&#123;</span>
+    serviceUrl <span class="token operator">=</span> <span class="token string">"http://172.16.1.187:21001/eureka"</span>
+    application <span class="token operator">=</span> <span class="token string">"default"</span>
+    weight <span class="token operator">=</span> <span class="token string">"1"</span>
+  <span class="token punctuation">&#125;</span>
+  redis <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"localhost:6379"</span>
+    db <span class="token operator">=</span> <span class="token string">"0"</span>
+  <span class="token punctuation">&#125;</span>
+  zk <span class="token punctuation">&#123;</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:2181"</span>
+    session<span class="token punctuation">.</span><span class="token keyword">timeout</span> <span class="token operator">=</span> <span class="token number">6000</span>
+    connect<span class="token punctuation">.</span><span class="token keyword">timeout</span> <span class="token operator">=</span> <span class="token number">2000</span>
+  <span class="token punctuation">&#125;</span>
+  consul <span class="token punctuation">&#123;</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:8500"</span>
+  <span class="token punctuation">&#125;</span>
+  etcd3 <span class="token punctuation">&#123;</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"http://localhost:2379"</span>
+  <span class="token punctuation">&#125;</span>
+  sofa <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:9603"</span>
+    application <span class="token operator">=</span> <span class="token string">"default"</span>
+    region <span class="token operator">=</span> <span class="token string">"DEFAULT_ZONE"</span>
+    datacenter <span class="token operator">=</span> <span class="token string">"DefaultDataCenter"</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    group <span class="token operator">=</span> <span class="token string">"SEATA_GROUP"</span>
+    addressWaitTime <span class="token operator">=</span> <span class="token string">"3000"</span>
+  <span class="token punctuation">&#125;</span>
+  file <span class="token punctuation">&#123;</span>
+    name <span class="token operator">=</span> <span class="token string">"file.conf"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+config <span class="token punctuation">&#123;</span>
+  <span class="token comment"># file、nacos 、apollo、zk、consul、etcd3</span>
+  type <span class="token operator">=</span> <span class="token string">"file"</span>
+
+  nacos <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"localhost:8848"</span>
+    namespace <span class="token operator">=</span> <span class="token string">"public"</span>
+    cluster <span class="token operator">=</span> <span class="token string">"default"</span>
+    group <span class="token operator">=</span> <span class="token string">"SEATA_GROUP"</span> <span class="token comment"># 这里也是</span>
+    username <span class="token operator">=</span> <span class="token string">"nacos"</span>
+    password <span class="token operator">=</span> <span class="token string">"nacos"</span>
+  <span class="token punctuation">&#125;</span>
+  consul <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:8500"</span>
+  <span class="token punctuation">&#125;</span>
+  apollo <span class="token punctuation">&#123;</span>
+    app<span class="token punctuation">.</span>id <span class="token operator">=</span> <span class="token string">"seata-server"</span>
+    apollo<span class="token punctuation">.</span>meta <span class="token operator">=</span> <span class="token string">"http://192.168.1.204:8801"</span>
+  <span class="token punctuation">&#125;</span>
+  zk <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"127.0.0.1:2181"</span>
+    session<span class="token punctuation">.</span><span class="token keyword">timeout</span> <span class="token operator">=</span> <span class="token number">6000</span>
+    connect<span class="token punctuation">.</span><span class="token keyword">timeout</span> <span class="token operator">=</span> <span class="token number">2000</span>
+  <span class="token punctuation">&#125;</span>
+  etcd3 <span class="token punctuation">&#123;</span>
+    serverAddr <span class="token operator">=</span> <span class="token string">"http://localhost:2379"</span>
+  <span class="token punctuation">&#125;</span>
+  file <span class="token punctuation">&#123;</span>
+    name <span class="token operator">=</span> <span class="token string">"file.conf"</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="5">
+<li>主启动</li>
+</ol>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@EnableDiscoveryClient</span>
+<span class="token annotation punctuation">@EnableFeignClients</span>
+<span class="token comment">//因为要使用Seata提供的代理数据源，所以在启动类移除SpringBoot自动默认装配的数据源</span>
+<span class="token annotation punctuation">@SpringBootApplication</span><span class="token punctuation">(</span>exclude <span class="token operator">=</span> <span class="token class-name">DataSourceAutoConfiguration</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SeataOrderMainApp2001</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">SpringApplication</span><span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token class-name">SeataOrderMainApp2001</span><span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">,</span> args<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="6">
+<li>使用Seata对数据源进行代理</li>
+</ol>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Configuration</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DataSourceProxyConfig</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token annotation punctuation">@Value</span><span class="token punctuation">(</span><span class="token string">"$&#123;mybatis.mapperLocations&#125;"</span><span class="token punctuation">)</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> mapperLocations<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token annotation punctuation">@ConfigurationProperties</span><span class="token punctuation">(</span>prefix <span class="token operator">=</span> <span class="token string">"spring.datasource"</span><span class="token punctuation">)</span>
+    <span class="token keyword">public</span> <span class="token class-name">DataSource</span> <span class="token function">druidDataSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">DruidDataSource</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> <span class="token class-name">DataSourceProxy</span> <span class="token function">dataSourceProxy</span><span class="token punctuation">(</span><span class="token class-name">DataSource</span> dataSource<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token keyword">return</span> <span class="token keyword">new</span> <span class="token class-name">DataSourceProxy</span><span class="token punctuation">(</span>dataSource<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token annotation punctuation">@Bean</span>
+    <span class="token keyword">public</span> <span class="token class-name">SqlSessionFactory</span> <span class="token function">sqlSessionFactoryBean</span><span class="token punctuation">(</span><span class="token class-name">DataSourceProxy</span> dataSourceProxy<span class="token punctuation">)</span> <span class="token keyword">throws</span> <span class="token class-name">Exception</span> <span class="token punctuation">&#123;</span>
+        <span class="token class-name">SqlSessionFactoryBean</span> sqlSessionFactoryBean <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">SqlSessionFactoryBean</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sqlSessionFactoryBean<span class="token punctuation">.</span><span class="token function">setDataSource</span><span class="token punctuation">(</span>dataSourceProxy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sqlSessionFactoryBean<span class="token punctuation">.</span><span class="token function">setMapperLocations</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">PathMatchingResourcePatternResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getResources</span><span class="token punctuation">(</span>mapperLocations<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        sqlSessionFactoryBean<span class="token punctuation">.</span><span class="token function">setTransactionFactory</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">SpringManagedTransactionFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> sqlSessionFactoryBean<span class="token punctuation">.</span><span class="token function">getObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p><strong>重点注意</strong>：</p>
+<p><img src="https://static01.imgkr.com/temp/bd58399ed9cd4f8ab57993eb117d3383.png"></p>
+<h4 id="集成结束"><a href="#集成结束" class="headerlink" title="集成结束"></a>集成结束</h4><p><code>将三个服务，以及seata集成到nocas中，看到下图且控制台没有报错即成功</code></p>
+<p><img src="https://static01.imgkr.com/temp/b71b95bc3e864235b2bff87d9c1e913e.png"></p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>为了测试用户下单，形成完成链路调用，业务方法如下：</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Service</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">OrderServiceImpl</span> <span class="token keyword">implements</span> <span class="token class-name">OrderService</span> <span class="token punctuation">&#123;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> <span class="token class-name">OrderDao</span> orderDao<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> <span class="token class-name">StorageService</span> storageService<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token keyword">private</span> <span class="token class-name">AccountService</span> accountService<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * 创建订单->调用库存服务扣减库存->调用账户服务扣减账户余额->修改订单状态
+     * 简单说：下订单->扣库存->减余额->改状态
+     */</span>
+    <span class="token annotation punctuation">@Override</span>
+<span class="token comment">//    @GlobalTransactional(name = "tx-create-order",rollbackFor = Exception.class)</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">create</span><span class="token punctuation">(</span><span class="token class-name">Order</span> order<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->开始新建订单"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//1 新建订单</span>
+        orderDao<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>order<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//2 扣减库存</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->订单微服务开始调用库存，做扣减Count"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        storageService<span class="token punctuation">.</span><span class="token function">decrease</span><span class="token punctuation">(</span>order<span class="token punctuation">.</span><span class="token function">getProductId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> order<span class="token punctuation">.</span><span class="token function">getCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->订单微服务开始调用库存，做扣减end"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//3 扣减账户</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->订单微服务开始调用账户，做扣减Money"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        accountService<span class="token punctuation">.</span><span class="token function">decrease</span><span class="token punctuation">(</span>order<span class="token punctuation">.</span><span class="token function">getUserId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> order<span class="token punctuation">.</span><span class="token function">getMoney</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->订单微服务开始调用账户，做扣减end"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment">//4 修改订单状态，从零到1,1代表已经完成</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->修改订单状态开始"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        orderDao<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>order<span class="token punctuation">.</span><span class="token function">getUserId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->修改订单状态结束"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"----->下订单结束了"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里测试调用扣减账户余额的逻辑超时异常</p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token annotation punctuation">@Service</span>
+<span class="token annotation punctuation">@Slf4j</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AccountServiceImpl</span> <span class="token keyword">implements</span> <span class="token class-name">AccountService</span> <span class="token punctuation">&#123;</span>
+
+    <span class="token annotation punctuation">@Resource</span>
+    <span class="token class-name">AccountDao</span> accountDao<span class="token punctuation">;</span>
+
+    <span class="token comment">/**
+     * 扣减账户余额
+     */</span>
+    <span class="token annotation punctuation">@SneakyThrows</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">decrease</span><span class="token punctuation">(</span><span class="token class-name">Long</span> userId<span class="token punctuation">,</span> <span class="token class-name">BigDecimal</span> money<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->account-service中扣减账户余额开始"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment">//模拟超时异常，全局事务回滚 @FeignClient的默认超时时间为1S</span>
+        <span class="token comment">//暂停几秒钟线程</span>
+        <span class="token class-name">TimeUnit</span><span class="token punctuation">.</span>SECONDS<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        accountDao<span class="token punctuation">.</span><span class="token function">decrease</span><span class="token punctuation">(</span>userId<span class="token punctuation">,</span> money<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        log<span class="token punctuation">.</span><span class="token function">info</span><span class="token punctuation">(</span><span class="token string">"------->account-service中扣减账户余额结束"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>输入地址：<code>http://localhost:2001/order/create?userId=1&amp;productId=1&amp;count=10&amp;money=100</code></p>
+<pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token number">2021</span><span class="token operator">-</span><span class="token number">06</span><span class="token operator">-</span><span class="token number">07</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">16</span><span class="token operator">:</span><span class="token number">53.935</span>  INFO <span class="token number">10572</span> <span class="token operator">--</span><span class="token operator">-</span> <span class="token punctuation">[</span>nio<span class="token operator">-</span><span class="token number">2001</span><span class="token operator">-</span>exec<span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token class-name"><span class="token namespace">c<span class="token punctuation">.</span>a<span class="token punctuation">.</span>s<span class="token punctuation">.</span>a<span class="token punctuation">.</span>service<span class="token punctuation">.</span>impl<span class="token punctuation">.</span></span>OrderServiceImpl</span>    <span class="token operator">:</span> <span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-></span>开始新建订单
+<span class="token number">2021</span><span class="token operator">-</span><span class="token number">06</span><span class="token operator">-</span><span class="token number">07</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">16</span><span class="token operator">:</span><span class="token number">53.939</span>  INFO <span class="token number">10572</span> <span class="token operator">--</span><span class="token operator">-</span> <span class="token punctuation">[</span>nio<span class="token operator">-</span><span class="token number">2001</span><span class="token operator">-</span>exec<span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token class-name"><span class="token namespace">c<span class="token punctuation">.</span>a<span class="token punctuation">.</span>s<span class="token punctuation">.</span>a<span class="token punctuation">.</span>service<span class="token punctuation">.</span>impl<span class="token punctuation">.</span></span>OrderServiceImpl</span>    <span class="token operator">:</span> <span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-></span>订单微服务开始调用库存，做扣减<span class="token class-name">Count</span>
+<span class="token number">2021</span><span class="token operator">-</span><span class="token number">06</span><span class="token operator">-</span><span class="token number">07</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">16</span><span class="token operator">:</span><span class="token number">53.949</span>  INFO <span class="token number">10572</span> <span class="token operator">--</span><span class="token operator">-</span> <span class="token punctuation">[</span>nio<span class="token operator">-</span><span class="token number">2001</span><span class="token operator">-</span>exec<span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token class-name"><span class="token namespace">c<span class="token punctuation">.</span>a<span class="token punctuation">.</span>s<span class="token punctuation">.</span>a<span class="token punctuation">.</span>service<span class="token punctuation">.</span>impl<span class="token punctuation">.</span></span>OrderServiceImpl</span>    <span class="token operator">:</span> <span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-></span>订单微服务开始调用库存，做扣减end
+<span class="token number">2021</span><span class="token operator">-</span><span class="token number">06</span><span class="token operator">-</span><span class="token number">07</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">16</span><span class="token operator">:</span><span class="token number">53.949</span>  INFO <span class="token number">10572</span> <span class="token operator">--</span><span class="token operator">-</span> <span class="token punctuation">[</span>nio<span class="token operator">-</span><span class="token number">2001</span><span class="token operator">-</span>exec<span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token class-name"><span class="token namespace">c<span class="token punctuation">.</span>a<span class="token punctuation">.</span>s<span class="token punctuation">.</span>a<span class="token punctuation">.</span>service<span class="token punctuation">.</span>impl<span class="token punctuation">.</span></span>OrderServiceImpl</span>    <span class="token operator">:</span> <span class="token operator">--</span><span class="token operator">--</span><span class="token operator">-></span>订单微服务开始调用账户，做扣减<span class="token class-name">Money</span>
+<span class="token number">2021</span><span class="token operator">-</span><span class="token number">06</span><span class="token operator">-</span><span class="token number">07</span> <span class="token number">10</span><span class="token operator">:</span><span class="token number">16</span><span class="token operator">:</span><span class="token number">54.953</span> ERROR <span class="token number">10572</span> <span class="token operator">--</span><span class="token operator">-</span> <span class="token punctuation">[</span>nio<span class="token operator">-</span><span class="token number">2001</span><span class="token operator">-</span>exec<span class="token operator">-</span><span class="token number">7</span><span class="token punctuation">]</span> <span class="token class-name"><span class="token namespace">o<span class="token punctuation">.</span>a<span class="token punctuation">.</span>c<span class="token punctuation">.</span>c<span class="token punctuation">.</span></span>C</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token punctuation">.</span><span class="token punctuation">[</span><span class="token operator">/</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token punctuation">[</span>dispatcherServlet<span class="token punctuation">]</span>    <span class="token operator">:</span> <span class="token class-name">Servlet</span><span class="token punctuation">.</span><span class="token function">service</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token keyword">for</span> servlet <span class="token punctuation">[</span>dispatcherServlet<span class="token punctuation">]</span> in context <span class="token keyword">with</span> <span class="token namespace">path</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> threw exception <span class="token punctuation">[</span><span class="token class-name">Request</span> processing failed<span class="token punctuation">;</span> nested exception is <span class="token class-name"><span class="token namespace">feign<span class="token punctuation">.</span></span>RetryableException</span><span class="token operator">:</span> <span class="token class-name">Read</span> timed out executing POST http<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>seata<span class="token operator">-</span>account<span class="token operator">-</span>service<span class="token operator">/</span>account<span class="token operator">/</span>decrease<span class="token operator">?</span>userId<span class="token operator">=</span><span class="token number">1</span><span class="token operator">&amp;</span>money<span class="token operator">=</span><span class="token number">100</span><span class="token punctuation">]</span> <span class="token keyword">with</span> <span class="token namespace">root</span> cause
+
+<span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span>SocketTimeoutException</span><span class="token operator">:</span> <span class="token class-name">Read</span> timed out
+	at <span class="token class-name"><span class="token namespace">java<span class="token punctuation">.</span>net<span class="token punctuation">.</span></span>SocketInputStream</span><span class="token punctuation">.</span><span class="token function">socketRead0</span><span class="token punctuation">(</span><span class="token class-name">Native</span> <span class="token class-name">Method</span><span class="token punctuation">)</span> <span class="token operator">~</span><span class="token punctuation">[</span>na<span class="token operator">:</span><span class="token number">1.8</span><span class="token number">.0_211</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<p>这里会发现订单虽然已经生成，但是状态却不是成功。用户账户余额也没有扣减成功。</p>
+<p>接下来，打开<code>OrderServiceImpl</code>中的<code>GlobalTransactional</code>。再次测试发现依然报错，但是数据库的数据中：订单表没有新增订单，账户无变化，库存无变化。代表事务回滚成功。</p>
+<h3 id="五、AT模式"><a href="#五、AT模式" class="headerlink" title="五、AT模式"></a>五、AT模式</h3><h4 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h4><ul>
+<li>基于支持本地 ACID 事务的关系型数据库。</li>
+<li>Java 应用，通过 JDBC 访问数据库。</li>
+</ul>
+<h4 id="整体机制"><a href="#整体机制" class="headerlink" title="整体机制"></a>整体机制</h4><p>两阶段提交协议的演变：</p>
+<ul>
+<li><p>一阶段：业务数据和回滚日志记录在同一个本地事务中提交，释放本地锁和连接资源。</p>
+</li>
+<li><p>二阶段：</p>
+<ul>
+<li>提交异步化，非常快速地完成。</li>
+<li>回滚通过一阶段的回滚日志进行反向补偿。</li>
+</ul>
+</li>
+</ul>
+<h4 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h4><p>  以一个示例来说明整个 AT 分支的工作过程。 </p>
+<p>业务表：<code>user</code></p>
+<table>
+<thead>
+<tr>
+<th>列名</th>
+<th>类型</th>
+<th>键</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>bigint(20)</td>
+<td><strong>主键（primary key）</strong></td>
+</tr>
+<tr>
+<td>name</td>
+<td>varchar(100)</td>
+<td></td>
+</tr>
+<tr>
+<td>age</td>
+<td>varchar(100)</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>AT 分支事务的业务逻辑： </p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">update</span> <span class="token keyword">user</span> <span class="token keyword">set</span> name <span class="token operator">=</span> <span class="token string">'wang'</span> <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'zhang'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<h5 id="一阶段"><a href="#一阶段" class="headerlink" title="一阶段"></a>一阶段</h5><p>过程：</p>
+<ol>
+<li>解析 SQL：得到 SQL 的类型（UPDATE），表（user），条件（where name = ‘zhang’）等相关的信息。</li>
+<li>查询前镜像：根据解析得到的条件信息，生成查询语句，定位数据。</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> id<span class="token punctuation">,</span> name<span class="token punctuation">,</span> age <span class="token keyword">from</span> <span class="token keyword">user</span> <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'zhang'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>得到前镜像：</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>name</th>
+<th>age</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>zhang</td>
+<td>20</td>
+</tr>
+</tbody></table>
+<ol start="3">
+<li>执行业务 SQL：更新这条记录的 name 为 ‘wang’。</li>
+<li>查询后镜像：根据前镜像的结果，通过 <strong>主键</strong> 定位数据。</li>
+</ol>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">select</span> id<span class="token punctuation">,</span> name<span class="token punctuation">,</span> age <span class="token keyword">from</span> <span class="token keyword">user</span> <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'wang'</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>得到后镜像：<br>| id   | name | since |<br>| —- | —- | —– |<br>| 1    | wang | 20    |</p>
+<ol start="5">
+<li>插入回滚日志：把前后镜像数据以及业务 SQL 相关的信息组成一条回滚日志记录，插入到 <code>UNDO_LOG</code> 表中。</li>
+</ol>
+<pre class="line-numbers language-json" data-language="json"><code class="language-json"><span class="token punctuation">&#123;</span>
+	<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.undo.BranchUndoLog"</span><span class="token punctuation">,</span>
+	<span class="token property">"xid"</span><span class="token operator">:</span> <span class="token string">"172.18.88.16:8091:145134433740062720"</span><span class="token punctuation">,</span>
+	<span class="token property">"branchId"</span><span class="token operator">:</span> <span class="token number">145134435245817856</span><span class="token punctuation">,</span>
+	<span class="token property">"sqlUndoLogs"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.util.ArrayList"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">&#123;</span>
+		<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.undo.SQLUndoLog"</span><span class="token punctuation">,</span>
+		<span class="token property">"sqlType"</span><span class="token operator">:</span> <span class="token string">"UPDATE"</span><span class="token punctuation">,</span>
+		<span class="token property">"tableName"</span><span class="token operator">:</span> <span class="token string">"user"</span><span class="token punctuation">,</span>
+		<span class="token property">"beforeImage"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+			<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.TableRecords"</span><span class="token punctuation">,</span>
+			<span class="token property">"tableName"</span><span class="token operator">:</span> <span class="token string">"user"</span><span class="token punctuation">,</span>
+			<span class="token property">"rows"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.util.ArrayList"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">&#123;</span>
+				<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Row"</span><span class="token punctuation">,</span>
+				<span class="token property">"fields"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.util.ArrayList"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">&#123;</span>
+					<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Field"</span><span class="token punctuation">,</span>
+					<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"id"</span><span class="token punctuation">,</span>
+					<span class="token property">"keyType"</span><span class="token operator">:</span> <span class="token string">"PRIMARY_KEY"</span><span class="token punctuation">,</span>
+					<span class="token property">"type"</span><span class="token operator">:</span> <span class="token number">-5</span><span class="token punctuation">,</span>
+					<span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.lang.Long"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span>
+				<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+					<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Field"</span><span class="token punctuation">,</span>
+					<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"name"</span><span class="token punctuation">,</span>
+					<span class="token property">"keyType"</span><span class="token operator">:</span> <span class="token string">"NULL"</span><span class="token punctuation">,</span>
+					<span class="token property">"type"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+					<span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"String"</span><span class="token punctuation">,</span> <span class="token string">"zhang"</span><span class="token punctuation">]</span>
+				<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+					<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Field"</span><span class="token punctuation">,</span>
+					<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"age"</span><span class="token punctuation">,</span>
+					<span class="token property">"keyType"</span><span class="token operator">:</span> <span class="token string">"NULL"</span><span class="token punctuation">,</span>
+					<span class="token property">"type"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+					<span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.math.BigDecimal"</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">]</span>
+				<span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+			<span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+		<span class="token punctuation">&#125;</span><span class="token punctuation">,</span>
+		<span class="token property">"afterImage"</span><span class="token operator">:</span> <span class="token punctuation">&#123;</span>
+			<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.TableRecords"</span><span class="token punctuation">,</span>
+			<span class="token property">"tableName"</span><span class="token operator">:</span> <span class="token string">"user"</span><span class="token punctuation">,</span>
+			<span class="token property">"rows"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.util.ArrayList"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">&#123;</span>
+				<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Row"</span><span class="token punctuation">,</span>
+				<span class="token property">"fields"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.util.ArrayList"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">&#123;</span>
+					<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Field"</span><span class="token punctuation">,</span>
+					<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"id"</span><span class="token punctuation">,</span>
+					<span class="token property">"keyType"</span><span class="token operator">:</span> <span class="token string">"PRIMARY_KEY"</span><span class="token punctuation">,</span>
+					<span class="token property">"type"</span><span class="token operator">:</span> <span class="token number">-5</span><span class="token punctuation">,</span>
+					<span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.lang.Long"</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">]</span>
+				<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+					<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Field"</span><span class="token punctuation">,</span>
+					<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"name"</span><span class="token punctuation">,</span>
+					<span class="token property">"keyType"</span><span class="token operator">:</span> <span class="token string">"NULL"</span><span class="token punctuation">,</span>
+					<span class="token property">"type"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+					<span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"String"</span><span class="token punctuation">,</span> <span class="token string">"王"</span><span class="token punctuation">]</span>
+				<span class="token punctuation">&#125;</span><span class="token punctuation">,</span> <span class="token punctuation">&#123;</span>
+					<span class="token property">"@class"</span><span class="token operator">:</span> <span class="token string">"io.seata.rm.datasource.sql.struct.Field"</span><span class="token punctuation">,</span>
+					<span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"age"</span><span class="token punctuation">,</span>
+					<span class="token property">"keyType"</span><span class="token operator">:</span> <span class="token string">"NULL"</span><span class="token punctuation">,</span>
+					<span class="token property">"type"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+					<span class="token property">"value"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"java.math.BigDecimal"</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">]</span>
+				<span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+			<span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span><span class="token punctuation">]</span><span class="token punctuation">]</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+<ol start="6">
+<li>提交前，向 TC 注册分支：申请 <code>product</code> 表中，主键值等于 1 的记录的 <strong>全局锁</strong> 。</li>
+<li>本地事务提交：业务数据的更新和前面步骤中生成的 UNDO LOG 一并提交。</li>
+<li>将本地事务提交的结果上报给 TC。</li>
+</ol>
+<h5 id="二阶段-提交"><a href="#二阶段-提交" class="headerlink" title="二阶段-提交"></a>二阶段-提交</h5><p>​    1. 收到 TC 的分支提交请求，把请求放入一个异步任务的队列中，马上返回提交成功的结果给 TC。</p>
+<ol start="2">
+<li>异步任务阶段的分支提交请求将异步和批量地删除相应 UNDO LOG 记录。</li>
+</ol>
+<h5 id="二阶段-回滚"><a href="#二阶段-回滚" class="headerlink" title="二阶段-回滚"></a>二阶段-回滚</h5><ol>
+<li>收到 TC 的分支回滚请求，开启一个本地事务，执行如下操作。</li>
+<li>通过 XID 和 Branch ID 查找到相应的 UNDO LOG 记录。</li>
+<li>数据校验：拿 UNDO LOG 中的后镜与当前数据进行比较，如果有不同，说明数据被当前全局事务之外的动作做了修改。这种情况，需要根据配置策略来做处理，详细的说明在另外的文档中介绍。</li>
+<li>根据 UNDO LOG 中的前镜像和业务 SQL 的相关信息生成并执行回滚的语句：</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">update user set name &#x3D; &#39;zhang&#39; where id &#x3D; 1;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<ol start="5">
+<li>提交本地事务。并把本地事务的执行结果（即分支事务回滚的结果）上报给 TC。</li>
+</ol>
+<h4 id="附：回滚日志表（undo-log）"><a href="#附：回滚日志表（undo-log）" class="headerlink" title="附：回滚日志表（undo_log）"></a>附：回滚日志表（undo_log）</h4><p>这里是MySQL下的</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>branch_id（事务分支ID）</td>
+<td>bigint PK</td>
+</tr>
+<tr>
+<td>xid （事务ID）</td>
+<td>varchar(100)</td>
+</tr>
+<tr>
+<td>context（表上下文，如序列化）</td>
+<td>varchar(128)</td>
+</tr>
+<tr>
+<td>rollback_info （ 回滚日志记录，包含前后置镜像等）</td>
+<td>longblob</td>
+</tr>
+<tr>
+<td>log_status （0：正常状态，1：回滚状态）</td>
+<td>tinyint</td>
+</tr>
+<tr>
+<td>log_created （创建时间）</td>
+<td>datetime</td>
+</tr>
+<tr>
+<td>log_modified （修改时间）</td>
+<td>datetime</td>
+</tr>
+</tbody></table>
+
+                
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="/about" rel="external nofollow noreferrer">Willivie</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="https://willivie.gitee.io/2022/06/02/seata-chu-li-fen-bu-shi-shi-wu/">https://willivie.gitee.io/2022/06/02/seata-chu-li-fen-bu-shi-shi-wu/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="/about" target="_blank">Willivie</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/Seata/">
+                                    <span class="chip bg-color">Seata</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+<div id="article-share">
+
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2022/08/15/redisson-shi-xian-fen-bu-shi-suo/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="Redisson实现分布式锁">
+                        
+                        <span class="card-title">Redisson实现分布式锁</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-08-15
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Redis/" class="post-category">
+                                    Redis
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Redisson/">
+                        <span class="chip bg-color">Redisson</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2022/05/26/nacos-fu-wu-zhu-ce-he-pei-zhi-zhong-xin/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Nacos服务注册和配置中心">
+                        
+                        <span class="card-title">Nacos服务注册和配置中心</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+官网：https://nacos.io/zh-cn/docs/what-is-nacos.html
+
+一、概述Nacos是什么？一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台。
+Nacos： Naming and Conf
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-05-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/SpringCloud-Alibaba/" class="post-category">
+                                    SpringCloud Alibaba
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Nacos/">
+                        <span class="chip bg-color">Nacos</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget card" style="background-color: white;">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="/libs/aplayer/APlayer.min.css">
+<style>
+    .aplayer .aplayer-lrc p {
+        
+        display: none;
+        
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 16px !important;
+    }
+
+    .aplayer .aplayer-lrc p.aplayer-lrc-current {
+        
+        display: none;
+        
+        font-size: 15px;
+        color: #42b983;
+    }
+
+    
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -66px !important;
+    }
+
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+        left: 0px !important;
+    }
+
+    
+</style>
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="5071241552"
+                   fixed='true'
+                   autoplay='false'
+                   theme='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.5'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            
+                <span id="year">2020-2023</span>
+            
+            
+            &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
+                class="white-color">70.9k</span>&nbsp;字
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv" style='display:none'>
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv" style='display:none'>
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2020";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/willivie" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="https://gitee.com/willivie" class="tooltipped" target="_blank" data-tooltip="访问我的Gitee" data-position="top" data-delay="50">
+        <i class="fab fa-google"></i>
+    </a>
+
+
+
+    <a href="mailto:willivie@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=2469785911" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 2469785911" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script> $(document).ready(function () { var int = setInterval(fixCount, 50); // 50ms周期检测函数 var pvcountOffset = 80000; // 初始化首次数据 var uvcountOffset = 20000; function fixCount() { if (document.getElementById("busuanzi_container_site_pv").style.display != "none") { $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + pvcountOffset); clearInterval(int); } if ($("#busuanzi_container_site_pv").css("display") != "none") { $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + uvcountOffset); // 加上初始数据 clearInterval(int); // 停止检测 } } }); </script>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(function () {
+    var searchFunc = function (path, search_id, content_id) {
+        'use strict';
+        $.ajax({
+            url: path,
+            dataType: "xml",
+            success: function (xmlResponse) {
+                // get the contents from search data
+                var datas = $("entry", xmlResponse).map(function () {
+                    return {
+                        title: $("title", this).text(),
+                        content: $("content", this).text(),
+                        url: $("url", this).text()
+                    };
+                }).get();
+                var $input = document.getElementById(search_id);
+                var $resultContent = document.getElementById(content_id);
+                $input.addEventListener('input', function () {
+                    var str = '<ul class=\"search-result-list\">';
+                    var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                    $resultContent.innerHTML = "";
+                    if (this.value.trim().length <= 0) {
+                        return;
+                    }
+                    // perform local searching
+                    datas.forEach(function (data) {
+                        var isMatch = true;
+                        var data_title = data.title.trim().toLowerCase();
+                        var data_content = data.content.trim().replace(/<[^>]+>/g, "").toLowerCase();
+                        var data_url = data.url;
+                        data_url = data_url.indexOf('/') === 0 ? data.url : '/' + data_url;
+                        var index_title = -1;
+                        var index_content = -1;
+                        var first_occur = -1;
+                        // only match artiles with not empty titles and contents
+                        if (data_title !== '' && data_content !== '') {
+                            keywords.forEach(function (keyword, i) {
+                                index_title = data_title.indexOf(keyword);
+                                index_content = data_content.indexOf(keyword);
+                                if (index_title < 0 && index_content < 0) {
+                                    isMatch = false;
+                                } else {
+                                    if (index_content < 0) {
+                                        index_content = 0;
+                                    }
+                                    if (i === 0) {
+                                        first_occur = index_content;
+                                    }
+                                }
+                            });
+                        }
+                        // show search results
+                        if (isMatch) {
+                            str += "<li><a href='" + data_url + "' class='search-result-title'>" + data_title + "</a>";
+                            var content = data.content.trim().replace(/<[^>]+>/g, "");
+                            if (first_occur >= 0) {
+                                // cut out 100 characters
+                                var start = first_occur - 20;
+                                var end = first_occur + 80;
+                                if (start < 0) {
+                                    start = 0;
+                                }
+                                if (start === 0) {
+                                    end = 100;
+                                }
+                                if (end > content.length) {
+                                    end = content.length;
+                                }
+                                var match_content = content.substr(start, end);
+                                // highlight all keywords
+                                keywords.forEach(function (keyword) {
+                                    var regS = new RegExp(keyword, "gi");
+                                    match_content = match_content.replace(regS, "<em class=\"search-keyword\">" + keyword + "</em>");
+                                });
+
+                                str += "<p class=\"search-result\">" + match_content + "...</p>"
+                            }
+                            str += "</li>";
+                        }
+                    });
+                    str += "</ul>";
+                    $resultContent.innerHTML = str;
+                });
+            }
+        });
+    };
+
+    searchFunc('/search.xml', 'searchInput', 'searchResult');
+});
+</script>
+
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+	
+    
+
+    
+
+    
+    <script type="text/javascript" src="/libs/background/ribbon-dynamic.js" async="async"></script>
+    
+
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
